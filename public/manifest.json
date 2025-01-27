@@ -1,0 +1,35 @@
+{
+	"short_name": "Test App",
+	"name": "Test App",
+	"icons": [
+		{
+			"src": "/img/icons/favicon-32.ico",
+			"sizes": "32x32",
+			"type": "image/x-icon"
+		},
+		{
+			"src": "/img/icons/favicon-64.ico",
+			"sizes": "64x64",
+			"type": "image/x-icon"
+		},
+		{
+			"src": "/img/icons/favicon-128.ico",
+			"sizes": "128x128",
+			"type": "image/x-icon"
+		},
+		{
+			"src": "/img/icons/android-chrome-192x192.png",
+			"sizes": "192x192",
+			"type": "image/png"
+		},
+		{
+			"src": "/img/icons/android-chrome-512x512.png",
+			"sizes": "512x512",
+			"type": "image/png"
+		}
+	],
+	"start_url": "./index.html",
+	"display": "standalone",
+	"theme_color": "#000000",
+	"background_color": "#ffffff"
+}

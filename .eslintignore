@@ -1,0 +1,6 @@
+node_modules/*
+dist
+.prettierrc
+.eslintrc.cjs
+env.d.ts
+commitlint.config.js
