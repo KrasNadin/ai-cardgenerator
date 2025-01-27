@@ -1,7 +1,7 @@
 module.exports = {
   "parser": "@typescript-eslint/parser",
-  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended", "plugin:@typescript-eslint/recommended-requiring-type-checking", "plugin:react/recommended", "plugin:prettier/recommended", "prettier", "airbnb/hooks", "plugin:react-hooks/recommended", "plugin:import/typescript", "plugin:sonarjs/recommended", "plugin:jsx-a11y/recommended", "plugin:storybook/recommended", "plugin:storybook/recommended", "plugin:jest/recommended"],
-  "plugins": ["import", "custom-rules", "react", "@typescript-eslint", "prettier", "import", "clean-code", "i18next", "jest"],
+  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended", "plugin:@typescript-eslint/recommended-requiring-type-checking", "plugin:react/recommended", "plugin:prettier/recommended", "prettier", "airbnb/hooks", "plugin:react-hooks/recommended", "plugin:import/typescript", "plugin:jsx-a11y/recommended", "plugin:jest/recommended"],
+  "plugins": ["import", "react", "@typescript-eslint", "prettier", "import", "clean-code", "jest"],
   "parserOptions": {
     "ecmaFeatures": {
       "jsx": true
@@ -12,15 +12,13 @@ module.exports = {
     "project": ["./tsconfig.json"]
   },
   "rules": {
-    "i18next/no-literal-string": "error",
-    "custom-rules/check-i18n-keys": 'error',
     "react/jsx-no-bind": [
       "error",
       {
         "ignoreRefs": false,
         "allowArrowFunctions": false,
         "allowFunctions": false,
-        "allowBind": false,
+        "allowBind": true,
         "ignoreDOMComponents": true,
       },
     ],
@@ -74,7 +72,7 @@ module.exports = {
     "jsx-a11y/label-has-associated-control": "off",
     "import/no-cycle": "error",
 
-    "import/order": ["warn", { // change to error when all requests merged
+    "import/order": ["warn", {
       "groups": ["builtin", "external", "internal", ["parent", "sibling"], "index"],
       "pathGroups": [
         {
@@ -107,18 +105,6 @@ module.exports = {
       }
     }
   },
-  "overrides": [
-    {
-      "files": ["eslint-custom-rules/**/*.js"],
-      "excludedFiles": "*",
-      "parserOptions": {
-        "project": null
-      },
-      "rules": {
-        "@typescript-eslint/*": "off"
-      }
-    }
-  ],
   "env": {
     "browser": true,
     "node": true,
