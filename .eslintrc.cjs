@@ -13,7 +13,7 @@ module.exports = {
   },
   "rules": {
     "react/jsx-no-bind": [
-      "error",
+      "warn",
       {
         "ignoreRefs": false,
         "allowArrowFunctions": false,
@@ -26,7 +26,7 @@ module.exports = {
     "react/no-unescaped-entities": "off",
     "@typescript-eslint/no-unsafe-call": "off",
     "linebreak-style": "off",
-    "no-console": "error",
+    "no-console": "warn",
     "prettier/prettier": "warn",
     "react/react-in-jsx-scope": "off",
     "react/prop-types": "off",

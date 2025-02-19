@@ -1,10 +1,13 @@
 import { OpenAIOutlined, StarOutlined, ProductOutlined } from '@ant-design/icons';
 import { Button, Steps } from 'antd';
+import { useNavigate } from 'react-router';
 
 import AiIntagration from '@/components/widgets/ai-integration';
 import AnkiIntagration from '@/components/widgets/anki-intagration';
 
 export default function Settings() {
+	const navigate = useNavigate();
+
 	return (
 		<div>
 			<Steps
@@ -25,7 +28,7 @@ export default function Settings() {
 					{
 						title: 'Create or update your prompt packs',
 						description: (
-							<Button type='text' color='primary' variant='solid' style={{ width: '100px' }}>
+							<Button onClick={() => navigate('/packs')} type='text' color='primary' variant='solid' style={{ width: '100px' }}>
 								Go to packs
 							</Button>
 						),

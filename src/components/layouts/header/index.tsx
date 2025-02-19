@@ -14,11 +14,11 @@ export default function Header() {
 
 	return (
 		<Flex justify='space-between' align='center' style={{ height: '100%' }}>
-			<SlackOutlined className='main-icon' />
+			<SlackOutlined className='mainIcon' />
 			<Title level={4} style={{ margin: 0 }}>
 				{title}
 			</Title>
-			<SunOutlined className='main-icon' />
+			<SunOutlined className='mainIcon' />
 		</Flex>
 	);
 }
