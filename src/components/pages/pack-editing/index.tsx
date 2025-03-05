@@ -2,10 +2,11 @@ import { FormOutlined } from '@ant-design/icons';
 import { Button, Row, Col, Divider } from 'antd';
 import { useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router';
+import { useRecoilValue } from 'recoil';
 
 import SavedInput from '@/components/ui/saved-input';
 import { PresetsList } from '@/components/wrapper/presets-list';
-import { usePacksActions } from '@/store/presets/atoms';
+import { packsState, usePacksActions } from '@/store/presets/atoms';
 import { randomId } from '@/store/presets/atoms';
 
 export default function Pack() {
@@ -13,6 +14,10 @@ export default function Pack() {
 	const { packId } = useParams();
 	const isEditingMode = Boolean(packId && packId !== 'new');
 	const { addPack, updatePack } = usePacksActions();
+
+	const packs = useRecoilValue(packsState);
+	const pack = packs.find((p) => p.id === packId);
+	const packTitle = pack?.title || 'Default title';
 
 	const handleSavePack = useCallback(
 		(title: string) => {
@@ -40,7 +45,7 @@ export default function Pack() {
 				<Divider orientation='left' orientationMargin='0'>
 					Pack Title
 				</Divider>
-				<SavedInput saveChange={handleSavePack} />
+				<SavedInput text={packTitle} saveChange={handleSavePack} />
 			</Col>
 			<Col span={24}>
 				<Button onClick={handleGoToCreatePreset} type='text' color='primary' variant='solid' style={{ height: '50px', width: '100%' }}>

@@ -1,5 +1,4 @@
 import { Button, Card, Flex } from 'antd';
-import { useNavigate } from 'react-router';
 
 type Props = {
 	packId?: string;
@@ -7,19 +6,21 @@ type Props = {
 	title: string;
 	description?: string;
 	presetsCount?: number;
+	deleteItem: (id: string) => void;
+	editItem: (id: string) => void;
 };
 
-export function PresetCard({ packId, presetId, title, description, presetsCount }: Props) {
-	const navigate = useNavigate();
+export function PresetCard({ packId, presetId, title, description, presetsCount, deleteItem, editItem }: Props) {
 	const cardContent = description || `Presets: ${presetsCount}`;
+	const itemId = (presetId || packId)!;
 
 	const handleCardEdit = (event: React.MouseEvent<HTMLButtonElement | HTMLElement>) => {
 		event.stopPropagation();
-		const url = presetId ? `/pack/${packId}/${presetId}` : `/pack/${packId}`;
-		return navigate(url);
+		editItem(itemId);
 	};
 	const handleCardDelete = (event: React.MouseEvent<HTMLButtonElement>) => {
 		event.stopPropagation();
+		deleteItem(itemId);
 	};
 	return (
 		<Card title={title} bordered={false} size='small' style={{ textAlign: 'left', marginTop: '7px' }} onClick={handleCardEdit}>

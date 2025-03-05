@@ -4,12 +4,19 @@ import { useEffect, useRef, useState } from 'react';
 
 type Props = {
 	saveChange: (text: string) => void;
+	buttonVariant?: 'save' | 'check';
+	text?: string;
 };
 
-export default function SavedInput({ saveChange }: Props) {
+export default function SavedInput({ saveChange, buttonVariant = 'save', text }: Props) {
 	const [isEditing, setIsEditing] = useState(false);
 	const [error, setError] = useState(false);
 	const inputRef = useRef<InputRef>(null);
+
+	const buttonVariants = {
+		save: isEditing ? 'Save' : <EditOutlined />,
+		check: 'Check',
+	};
 
 	useEffect(() => {
 		if (isEditing && inputRef.current) {
@@ -38,15 +45,15 @@ export default function SavedInput({ saveChange }: Props) {
 					ref={inputRef}
 					style={{ width: '80%', height: '40px' }}
 					count={{
-						show: true,
-						max: 30,
+						show: buttonVariant == 'check' ? false : true,
+						max: 300,
 					}}
-					defaultValue='Default Pack Title'
-					placeholder='input pack title'
+					defaultValue={text}
+					placeholder={buttonVariant === 'check' ? 'Place for GPT api key' : 'Write your title'}
 					status={error ? 'error' : ''}
 				/>
-				<Button style={{ width: '20%', height: '40px' }} onClick={handleSave}>
-					{isEditing ? 'Save' : <EditOutlined />}
+				<Button type={buttonVariant === 'check' ? 'primary' : 'default'} style={{ width: '20%', height: '40px' }} onClick={handleSave}>
+					{buttonVariants[buttonVariant]}
 				</Button>
 			</Space.Compact>
 		</>
