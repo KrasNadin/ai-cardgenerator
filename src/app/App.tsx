@@ -33,10 +33,14 @@ export default function App() {
 							<Header setTheme={setMode} currentTheme={mode} />
 						</AntdHeader>
 						<AntdContend style={{ padding: '15px 48px', overflowY: 'auto' }}>
-							<Routes>{renderRoutes(routes)}</Routes>
+							<div style={{ maxWidth: '500px', margin: '0 auto', width: '100%' }}>
+								<Routes>{renderRoutes(routes)}</Routes>
+							</div>
 						</AntdContend>
 						<AntdFooter>
-							<Footer />
+							<div style={{ maxWidth: '500px', margin: '0 auto', width: '100%' }}>
+								<Footer />
+							</div>
 						</AntdFooter>
 					</BrowserRouter>
 				</Layout>

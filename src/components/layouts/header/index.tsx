@@ -22,7 +22,7 @@ export default function Header({ setTheme, currentTheme }: Props) {
 	};
 
 	return (
-		<Flex justify='space-between' align='center' style={{ height: '100%' }}>
+		<Flex justify='space-between' align='center' style={{ height: '100%', margin: '0 auto', maxWidth: '500px' }}>
 			<RocketOutlined className='mainIcon' />
 			<Title level={4} style={{ margin: 0 }}>
 				{title}
