@@ -18,7 +18,7 @@ type RouteWithSubRoutesType<T = unknown> = {
 
 export const routes: RouteWithSubRoutesType[] = [
 	{
-		path: '/',
+		path: '/ankipower-cardgenerator/',
 		title: 'Settings',
 		component: Settings,
 	},
