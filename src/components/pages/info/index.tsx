@@ -14,7 +14,7 @@ export default function Info() {
 
 			<Paragraph>
 				If you like this app, I’d really appreciate it if you gave it a star on
-				<Link href='https://github.com/KrasNadin/ai-cardgenerator' target='_blank'>
+				<Link href='https://github.com/KrasNadin/ankipower-cardgenerator' target='_blank'>
 					{' '}
 					GitHub
 				</Link>
