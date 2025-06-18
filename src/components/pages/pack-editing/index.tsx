@@ -1,4 +1,4 @@
-import { FormOutlined } from '@ant-design/icons';
+import { ArrowLeftOutlined, FormOutlined } from '@ant-design/icons';
 import { Button, Row, Col, Divider } from 'antd';
 import { useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router';
@@ -39,9 +39,21 @@ export default function Pack() {
 		navigate(`/pack/${newPackId}/new`);
 	}, [isEditingMode, packId, addPack, navigate]);
 
+	const handleBack = () => {
+		navigate(`/packs`);
+	};
+
 	return (
 		<Row justify='center' gutter={[0, 24]} style={{ width: 'auto' }}>
 			<Col span={24}>
+				<Button
+					type='text'
+					variant='solid'
+					style={{ paddingLeft: 0 }}
+					icon={<ArrowLeftOutlined className='mainIcon' />}
+					onClick={handleBack}>
+					Back to packs
+				</Button>
 				<Divider orientation='left' orientationMargin='0'>
 					Pack Title
 				</Divider>
@@ -49,7 +61,7 @@ export default function Pack() {
 			</Col>
 			<Col span={24}>
 				<Button onClick={handleGoToCreatePreset} type='text' color='primary' variant='solid' style={{ height: '50px', width: '100%' }}>
-					<FormOutlined className='mainIcon' />
+					<FormOutlined />
 					Create new card
 				</Button>
 			</Col>

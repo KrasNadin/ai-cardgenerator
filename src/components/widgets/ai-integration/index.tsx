@@ -1,7 +1,9 @@
 import { Flex, Typography } from 'antd';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useRecoilState } from 'recoil';
 
+import { checkApiKey } from '@/api/gpt-responses';
+import { renderCheckStatus } from '@/components/ui/check-status';
 import SavedInput from '@/components/ui/saved-input';
 import { gptState, useGptActions } from '@/store/presets/atoms';
 
@@ -10,11 +12,19 @@ const { Text, Link } = Typography;
 export default function AiIntagration() {
 	const { setGptKey } = useGptActions();
 	const [key] = useRecoilState(gptState);
+	const [checkStatus, setCheckStatus] = useState('waiting');
 
 	const handleCheck = useCallback(
-		(key: string) => {
-			setGptKey(key);
-			console.log(key);
+		async (key: string) => {
+			setCheckStatus('checking');
+			const isChecked = await checkApiKey(key);
+			if (isChecked) {
+				setGptKey(key);
+				setCheckStatus('success');
+			} else {
+				setCheckStatus('error');
+				console.warn('Invalid API key. Update cancelled.');
+			}
 		},
 		[setGptKey]
 	);
@@ -33,6 +43,7 @@ export default function AiIntagration() {
 			</Flex>
 			<Flex gap='middle'>
 				<SavedInput saveChange={handleCheck} buttonVariant={'check'} text={key} />
+				<div style={{ width: 20, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{renderCheckStatus(checkStatus)}</div>
 			</Flex>
 		</Flex>
 	);

@@ -1,7 +1,7 @@
 import { atom, useRecoilState, useSetRecoilState } from 'recoil';
 
 import { localStorageEffect } from './effects';
-import { Pack, DefaultInfo, Preset } from './types';
+import { Pack, DefaultInfo, Preset, Card } from './types';
 
 export const randomId = (prefix: string = '') => `${prefix}-${Math.random().toString(36).substr(2, 9)}`;
 
@@ -88,9 +88,44 @@ export const usePacksActions = () => {
 	return { addPack, addPresetToPack, updatePreset, updatePack, deletePreset, deletePack };
 };
 
+export const userCards = atom<Card[]>({
+	key: 'userCard',
+	default: [],
+	effects: [localStorageEffect('userCards')],
+});
+
+export const useUserCards = () => {
+	const [cards, setCards] = useRecoilState(userCards);
+
+	const addCard = (newCards: Card[]) => {
+		setCards((prevCards) => [...prevCards, ...newCards]);
+	};
+
+	const deleteCard = (key: string) => {
+		setCards((prevCards) => {
+			return prevCards.filter((card) => card.key !== key);
+		});
+	};
+
+	const editCard = (key: string, payload: Partial<Card>) => {
+		const editedCards = cards.map((card) => {
+			if (card.key === key) {
+				console.log('hui');
+				return { ...card, ...payload };
+			}
+			return card;
+		});
+
+		setCards(editedCards);
+	};
+
+	return { addCard, deleteCard, editCard };
+};
+
 export const gptState = atom<string>({
 	key: 'gptKey',
 	default: '',
+	effects: [localStorageEffect('gptKey')],
 });
 
 export const useGptActions = () => {
