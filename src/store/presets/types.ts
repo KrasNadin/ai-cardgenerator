@@ -16,3 +16,13 @@ export type DefaultInfo = {
 export type Prompt = {
 	text: string;
 };
+
+export type Card = {
+	key: number | string;
+	frontSide: {
+		text: string;
+	};
+	backSide: {
+		text: string;
+	};
+};

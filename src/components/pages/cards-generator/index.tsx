@@ -1,84 +1,119 @@
-import { SignatureOutlined, SnippetsOutlined } from '@ant-design/icons';
-import { Button, Row, Col, Select, Input, Divider } from 'antd';
-import type { SelectProps } from 'antd';
-import { useCallback, useState } from 'react';
+import { ExclamationOutlined, SignatureOutlined } from '@ant-design/icons';
+import { Row, Col, Select, Button, Divider, Alert, notification } from 'antd';
+import { useState } from 'react';
+import { useRecoilValue } from 'recoil';
 
-import NewCard from '@/components/stateless/new-card';
-
-const options: SelectProps['options'] = [];
-
-for (let i = 10; i < 36; i++) {
-	options.push({
-		value: i.toString(36) + i,
-		label: i.toString(36) + i,
-	});
-}
-
-const handleChange = (value: string) => {
-	console.log(`selected ${value}`);
-};
+import { PasteInput } from '@/components/ui/paste-input';
+import { CardWrapper } from '@/components/wrapper/generated-cards';
+import { useGenerateCards } from '@/hooks/generate-cards';
+import { userCards, useUserCards } from '@/store/presets/atoms';
+import { getApiKey, getPacks } from '@/store/presets/selector';
+import { Card } from '@/store/presets/types';
 
 export default function CardGenerator() {
-	const [text, setText] = useState('');
+	const apiKey = useRecoilValue(getApiKey);
 
-	const handlePaste = useCallback(async () => {
-		try {
-			const clipboardText = await navigator.clipboard.readText();
-			setText(clipboardText);
-		} catch (err) {
-			console.error('Failed to read clipboard:', err);
+	const packs = useRecoilValue(getPacks);
+	const [selectedPack, setSelectedPack] = useState<string | null>(null);
+
+	const { addCard } = useUserCards();
+	const cards = useRecoilValue(userCards);
+
+	const [word, setWord] = useState('');
+	const { generatedCard, loading } = useGenerateCards(apiKey);
+
+	const [api, contextHolder] = notification.useNotification();
+
+	const openNotification = (message: string) => {
+		api.info({
+			message: message,
+			icon: <ExclamationOutlined />,
+			placement: 'bottomRight',
+		});
+	};
+
+	if (!apiKey) {
+		console.error('API-key OpenAI not found!');
+		openNotification('Hmm, that didn’t work. Make sure your GPT key settings are correct.');
+	}
+
+	const handlePackChange = (value: string) => {
+		setSelectedPack(value);
+	};
+
+	const handleGenerate = async () => {
+		if (!selectedPack) {
+			openNotification('Choose the pack');
+			return;
 		}
-	}, []);
 
-	const handleGenerate = () => {
-		console.log('generate new card');
+		const pack = packs.find((p) => p.id === selectedPack);
+		if (!pack) {
+			openNotification('Pack not found');
+			return;
+		}
+
+		const { presets } = pack;
+		if (!presets?.length) {
+			openNotification('Selected pack has no presets');
+			return;
+		}
+
+		try {
+			const responseResults = await Promise.all(presets.map((preset) => generatedCard(preset, word)));
+
+			const validCards = responseResults.filter(Boolean) as Card[];
+
+			if (validCards.length > 0) {
+				addCard(validCards);
+			}
+		} catch (err) {
+			console.error('Card generation failed:', err);
+		}
 	};
 
 	return (
-		<Row justify='center' gutter={[0, 24]} style={{ width: 'auto' }}>
-			<Col span={24}>
-				<Select style={{ width: '100%' }} placeholder='Select preset pack' onChange={handleChange} options={options} />
-			</Col>
-			<Col span={24} style={{ position: 'relative' }}>
-				<Input.TextArea
-					value={text}
-					placeholder='Write text for card'
-					allowClear
-					onChange={(e) => setText(e.target.value)}
-					autoSize={{ minRows: 2, maxRows: 6 }}
-					style={{ paddingLeft: '40px' }} // Отступ справа, чтобы не перекрывать иконку
-				/>
-				<Button
-					type='text'
-					onClick={handlePaste}
-					style={{
-						position: 'absolute',
-						left: '0px',
-						zIndex: 10,
-					}}>
-					<SnippetsOutlined style={{ color: 'grey' }} />
-				</Button>
-			</Col>
-			<Col span={24}>
-				<Button
-					onClick={handleGenerate}
-					type='text'
-					color='primary'
-					variant='solid'
-					style={{
-						height: '50px',
-						width: '100%',
-					}}>
-					<SignatureOutlined className='mainIcon' />
-					Generate new card
-				</Button>
-			</Col>
-			<Col span={24}>
-				<Divider orientation='left' orientationMargin='0'>
-					Choose card for create
-				</Divider>
-				<NewCard />
-			</Col>
-		</Row>
+		<>
+			{contextHolder}
+			<Row justify='center' gutter={[0, 24]} style={{ width: 'auto' }}>
+				<Col span={24}>
+					<Alert
+						message='Do you have the Anki app open?'
+						description='Make sure the Anki app is running while using this integration — it only works when Anki is open.'
+						type='info'
+						closable
+						style={{
+							width: '100%',
+							maxWidth: '100%',
+							padding: '16px',
+						}}
+					/>
+				</Col>
+				<Col span={24}>
+					<Select
+						style={{ width: '100%' }}
+						placeholder='Select preset pack'
+						onChange={handlePackChange}
+						options={packs.map((pack) => ({
+							value: pack.id,
+							label: pack.title,
+						}))}
+					/>
+				</Col>
+				<Col span={24} style={{ position: 'relative' }}>
+					<PasteInput setWord={setWord} />
+				</Col>
+				<Col span={24}>
+					<Button onClick={handleGenerate} type='primary' disabled={loading} style={{ height: '50px', width: '100%' }}>
+						<SignatureOutlined className='mainIcon' />
+						{loading ? 'Generating...' : 'Generate new card'}
+					</Button>
+				</Col>
+				<Col span={24}>
+					<Divider>Choose card for create</Divider>
+					<CardWrapper cards={cards} />
+				</Col>
+			</Row>
+		</>
 	);
 }

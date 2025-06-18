@@ -2,6 +2,7 @@ import { FC } from 'react';
 import { Route } from 'react-router-dom';
 
 import CardGenerator from '@/components/pages/cards-generator';
+import Info from '@/components/pages/info';
 import Pack from '@/components/pages/pack-editing';
 import PresetEditing from '@/components/pages/preset-editing';
 import PresetPacks from '@/components/pages/preset-packs';
@@ -45,6 +46,11 @@ export const routes: RouteWithSubRoutesType[] = [
 		path: '/generate',
 		title: 'Time for Card Generate',
 		component: CardGenerator,
+	},
+	{
+		path: '/info',
+		title: 'About AnkiPower',
+		component: Info,
 	},
 ];
 

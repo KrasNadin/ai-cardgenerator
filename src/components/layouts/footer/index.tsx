@@ -9,7 +9,7 @@ export default function Footer() {
 			<SettingOutlined className='mainIcon' onClick={() => navigate('/')} />
 			<ProductOutlined className='mainIcon' onClick={() => navigate('/packs')} />
 			<TranslationOutlined className='mainIcon' onClick={() => navigate('/generate')} />
-			<QuestionOutlined className='mainIcon' />
+			<QuestionOutlined className='mainIcon' onClick={() => navigate('/info')} />
 		</Flex>
 	);
 }

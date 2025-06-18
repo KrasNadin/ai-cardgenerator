@@ -1,4 +1,4 @@
-import { SlackOutlined, SunOutlined } from '@ant-design/icons';
+import { RocketOutlined, SunOutlined } from '@ant-design/icons';
 import { Flex, Typography } from 'antd';
 import { useLocation } from 'react-router-dom';
 
@@ -6,19 +6,30 @@ import { routes } from '@/app/routes';
 
 const { Title } = Typography;
 
-export default function Header() {
+type Props = {
+	setTheme: (mode: 'light' | 'dark') => void;
+	currentTheme: 'light' | 'dark';
+};
+
+export default function Header({ setTheme, currentTheme }: Props) {
 	const location = useLocation();
 
 	const currentRoute = routes.find((route) => route.path === location.pathname);
 	const title = currentRoute ? currentRoute.title : 'Default Title';
 
+	const toggleTheme = () => {
+		setTheme(currentTheme === 'dark' ? 'light' : 'dark');
+	};
+
 	return (
 		<Flex justify='space-between' align='center' style={{ height: '100%' }}>
-			<SlackOutlined className='mainIcon' />
+			<RocketOutlined className='mainIcon' />
 			<Title level={4} style={{ margin: 0 }}>
 				{title}
 			</Title>
-			<SunOutlined className='mainIcon' />
+			<button onClick={toggleTheme} style={{ all: 'unset', cursor: 'pointer' }}>
+				<SunOutlined className='mainIcon' />
+			</button>
 		</Flex>
 	);
 }
