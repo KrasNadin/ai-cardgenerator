@@ -110,7 +110,6 @@ export const useUserCards = () => {
 	const editCard = (key: string, payload: Partial<Card>) => {
 		const editedCards = cards.map((card) => {
 			if (card.key === key) {
-				console.log('hui');
 				return { ...card, ...payload };
 			}
 			return card;
@@ -119,7 +118,17 @@ export const useUserCards = () => {
 		setCards(editedCards);
 	};
 
-	return { addCard, deleteCard, editCard };
+	const saveCard = (key: string) => {
+		const savedCard = cards.map((card) => {
+			if (card.key === key) {
+				return { ...card, isSaved: true };
+			}
+			return card;
+		});
+		setCards(savedCard);
+	};
+
+	return { addCard, deleteCard, editCard, saveCard };
 };
 
 export const gptState = atom<string>({

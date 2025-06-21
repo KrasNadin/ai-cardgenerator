@@ -18,7 +18,7 @@ export const CardWrapper: FC<CardWrapperProps> = ({ cards }) => {
 					.reverse()
 					.map((card) => (
 						<div key={card.key} style={{ marginBottom: '16px' }}>
-							<NewCard cardKey={card.key} frontText={card.frontSide.text} backText={card.backSide.text} />
+							<NewCard cardKey={card.key} frontText={card.frontSide.text} backText={card.backSide.text} isSaved={card.isSaved} />
 						</div>
 					))
 			)}

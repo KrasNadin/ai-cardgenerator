@@ -25,4 +25,5 @@ export type Card = {
 	backSide: {
 		text: string;
 	};
+	isSaved: boolean;
 };

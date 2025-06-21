@@ -1,15 +1,14 @@
 import { Modal, Select, Spin, Space } from 'antd';
 import { useEffect, useState } from 'react';
 
-import { addCardToAnki, checkAnkiConnection } from '@/api/anki-responses';
+import { checkAnkiConnection } from '@/api/anki-responses';
 
 type Props = {
 	setSaveWindow: (value: boolean) => void;
-	front: string;
-	back: string;
+	handleSaveCard: (selectedDeck: string, tags: string[]) => void;
 };
 
-export function SaveWindow({ setSaveWindow, front, back }: Props) {
+export function SaveWindow({ setSaveWindow, handleSaveCard }: Props) {
 	const [deckNameList, setDeckNameList] = useState<string[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [selectedDeck, setSelectedDeck] = useState<string | null>(null);
@@ -42,7 +41,7 @@ export function SaveWindow({ setSaveWindow, front, back }: Props) {
 
 	const handleOk = () => {
 		if (selectedDeck) {
-			addCardToAnki(selectedDeck, front, back, tags);
+			handleSaveCard(selectedDeck, tags);
 		}
 		setSaveWindow(false);
 	};
@@ -63,9 +62,7 @@ export function SaveWindow({ setSaveWindow, front, back }: Props) {
 					<Spin /> <p>Hold on, let's see where we can save this card.</p>
 				</Space>
 			) : deckNameList.length === 0 ? (
-				<p style={{ color: 'red' }}>
-					Oops, something went wrong. Please check your connection to Anki and make sure the application is running.
-				</p>
+				<p>Oops, something went wrong. Please check your connection to Anki and make sure the application is running.</p>
 			) : (
 				<>
 					<p>Select a deck:</p>

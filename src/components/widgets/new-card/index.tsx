@@ -1,7 +1,8 @@
-import { EditOutlined, CheckOutlined, DeleteOutlined, SaveOutlined } from '@ant-design/icons';
-import { Card, Input, Divider, Button, Modal } from 'antd';
+import { EditOutlined, CheckOutlined, DeleteOutlined, SaveOutlined, StarOutlined } from '@ant-design/icons';
+import { Card, Input, Divider, Button, Modal, notification } from 'antd';
 import { useState } from 'react';
 
+import { addCardToAnki } from '@/api/anki-responses';
 import { SaveWindow } from '@/components/stateless/save-window';
 import { useUserCards } from '@/store/presets/atoms';
 
@@ -9,16 +10,25 @@ type Props = {
 	cardKey: string;
 	frontText: string;
 	backText: string;
+	isSaved?: boolean;
 };
 
-export function NewCard({ cardKey, frontText, backText }: Props) {
-	const { deleteCard, editCard } = useUserCards();
+export function NewCard({ cardKey, frontText, backText, isSaved }: Props) {
+	const { deleteCard, editCard, saveCard } = useUserCards();
 	const [frontSideText, setFrontText] = useState(frontText);
 	const [backSideText, setBackText] = useState(backText);
 	const [isEditing, setIsEditing] = useState(false);
 	const [saveWindow, setSaveWindow] = useState(false);
-	const [isSaved, setIsSaved] = useState(false);
 	const [deleteWindow, setDeleteWindow] = useState(false);
+	const [api, contextHolder] = notification.useNotification();
+
+	const openNotification = (message: string) => {
+		api.info({
+			message: message,
+			icon: <StarOutlined />,
+			placement: 'bottomRight',
+		});
+	};
 
 	const handleEditCard = () => {
 		if (isEditing) {
@@ -37,12 +47,20 @@ export function NewCard({ cardKey, frontText, backText }: Props) {
 
 	const handleAddCard = () => {
 		setSaveWindow(true);
-		setIsSaved(true);
+	};
+
+	const handleSaveCard = async (selectedDeck: string, tags: string[]) => {
+		const success = await addCardToAnki(selectedDeck, frontText, backText, tags);
+		if (success) {
+			saveCard(cardKey);
+			openNotification('Yay! A new card has been added to your Anki app.');
+		}
 	};
 
 	return (
 		<>
-			{saveWindow && <SaveWindow setSaveWindow={setSaveWindow} front={frontSideText} back={backSideText} />}
+			{saveWindow && <SaveWindow setSaveWindow={setSaveWindow} handleSaveCard={handleSaveCard} />}
+			{contextHolder}
 			{deleteWindow && (
 				<Modal
 					width='80%'

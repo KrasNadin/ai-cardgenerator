@@ -22,6 +22,7 @@ export const useGenerateCards = (apiKey: string) => {
 				key: randomId('userCard-'),
 				frontSide: { text: frontResponse },
 				backSide: { text: backResponse },
+				isSaved: false,
 			};
 		} catch (error) {
 			console.error('Ups! Something went wrong:', error);

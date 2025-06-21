@@ -69,6 +69,7 @@ export default function CardGenerator() {
 			}
 		} catch (err) {
 			console.error('Card generation failed:', err);
+			openNotification('Ups... Something went wrong. Check you internet connection');
 		}
 	};
 
