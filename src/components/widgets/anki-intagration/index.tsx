@@ -1,12 +1,15 @@
 import { Flex, Button, Typography } from 'antd';
+import { useState } from 'react';
 
+import { checkAnkiConnection } from '@/api/anki-responses';
 import CodeSnipped from '@/components/stateless/code-snipped';
+import { renderCheckStatus } from '@/components/ui/check-status';
 
 const { Text, Link } = Typography;
 
 const ankiSettings = JSON.stringify(
 	{
-		apiKey: 'myankikey',
+		apiKey: 'ankipowerapp',
 		webCorsOriginList: ['http://localhost', '*'],
 		webBindPort: 8765,
 	},
@@ -15,6 +18,19 @@ const ankiSettings = JSON.stringify(
 );
 
 export default function AnkiIntagration() {
+	const [checkStatus, setCheckStatus] = useState('waiting');
+
+	const handleCheckAnkiConnection = async () => {
+		setCheckStatus('checking');
+		const isChecked = await checkAnkiConnection();
+		if (isChecked) {
+			setCheckStatus('success');
+		} else {
+			setCheckStatus('error');
+			console.warn('Invalid API key. Update cancelled.');
+		}
+	};
+
 	return (
 		<Flex vertical gap='middle'>
 			<Flex vertical>
@@ -38,9 +54,12 @@ export default function AnkiIntagration() {
 				<Text>6. Copy paste the following config, you can change the apiKey:</Text>
 			</Flex>
 			<CodeSnipped code={ankiSettings} />
-			<Button color='primary' variant='solid' style={{ width: '100px' }}>
-				Check
-			</Button>
+			<Flex gap='middle'>
+				<Button color='primary' variant='solid' style={{ width: '100px' }} onClick={handleCheckAnkiConnection}>
+					Check
+				</Button>
+				{renderCheckStatus(checkStatus)}
+			</Flex>
 		</Flex>
 	);
 }

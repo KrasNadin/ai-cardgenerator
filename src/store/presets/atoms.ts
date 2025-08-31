@@ -1,12 +1,14 @@
-import { atom, useRecoilState } from 'recoil';
+import { atom, useRecoilState, useSetRecoilState } from 'recoil';
 
-import { Pack, DefaultInfo, Preset } from './types';
+import { localStorageEffect } from './effects';
+import { Pack, DefaultInfo, Preset, Card } from './types';
 
 export const randomId = (prefix: string = '') => `${prefix}-${Math.random().toString(36).substr(2, 9)}`;
 
 export const packsState = atom<Pack[]>({
 	key: 'packs',
 	default: [],
+	effects: [localStorageEffect('packs')],
 });
 
 export const usePacksActions = () => {
@@ -14,6 +16,12 @@ export const usePacksActions = () => {
 
 	const addPack = ({ id, title }: DefaultInfo) => {
 		setPacks((prevPacks) => [...prevPacks, { id, title, presets: [] }]);
+	};
+
+	const deletePack = (packId: string) => {
+		setPacks((prevPacks) => {
+			return prevPacks.filter((pack) => pack.id !== packId);
+		});
 	};
 
 	const addPresetToPack = (presetInfo: Preset, packId: string) => {
@@ -51,6 +59,21 @@ export const usePacksActions = () => {
 		});
 	};
 
+	const deletePreset = (packId: string, presetId: string) => {
+		setPacks((prevPacks) => {
+			const packIndex = prevPacks.findIndex((pack) => pack.id === packId);
+
+			return prevPacks.map((pack, index) =>
+				index === packIndex
+					? {
+							...pack,
+							presets: pack.presets.filter((preset) => preset.id !== presetId),
+						}
+					: pack
+			);
+		});
+	};
+
 	const updatePack = (id: string, payload: Partial<Pack>) => {
 		const updatedPacks = packs.map((pack) => {
 			if (pack.id === id) {
@@ -62,5 +85,64 @@ export const usePacksActions = () => {
 		setPacks(updatedPacks);
 	};
 
-	return { addPack, addPresetToPack, updatePreset, updatePack };
+	return { addPack, addPresetToPack, updatePreset, updatePack, deletePreset, deletePack };
+};
+
+export const userCards = atom<Card[]>({
+	key: 'userCard',
+	default: [],
+	effects: [localStorageEffect('userCards')],
+});
+
+export const useUserCards = () => {
+	const [cards, setCards] = useRecoilState(userCards);
+
+	const addCard = (newCards: Card[]) => {
+		setCards((prevCards) => [...prevCards, ...newCards]);
+	};
+
+	const deleteCard = (key: string) => {
+		setCards((prevCards) => {
+			return prevCards.filter((card) => card.key !== key);
+		});
+	};
+
+	const editCard = (key: string, payload: Partial<Card>) => {
+		const editedCards = cards.map((card) => {
+			if (card.key === key) {
+				return { ...card, ...payload };
+			}
+			return card;
+		});
+
+		setCards(editedCards);
+	};
+
+	const saveCard = (key: string) => {
+		const savedCard = cards.map((card) => {
+			if (card.key === key) {
+				return { ...card, isSaved: true };
+			}
+			return card;
+		});
+		setCards(savedCard);
+	};
+
+	return { addCard, deleteCard, editCard, saveCard };
+};
+
+export const gptState = atom<string>({
+	key: 'gptKey',
+	default: '',
+	effects: [localStorageEffect('gptKey')],
+});
+
+export const useGptActions = () => {
+	const setKey = useSetRecoilState(gptState);
+
+	const setGptKey = (apiKey: string) => {
+		setKey(apiKey);
+	};
+
+	return { setGptKey };
 };
